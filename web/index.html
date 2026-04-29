@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Dashboard | Live Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <span>HealthMonitor Pro</span>
+            </div>
+            <nav class="main-nav">
+                <button class="nav-btn active" id="btn-live"><i class="fa-solid fa-tower-broadcast"></i> Live
+                    Dashboard</button>
+                <button class="nav-btn" id="btn-history"><i class="fa-solid fa-clock-rotate-left"></i> History
+                    Records</button>
+            </nav>
+            <div class="status-badge">
+                <div class="status-dot" id="connection-status"></div>
+                <span id="status-text">Connecting...</span>
+            </div>
+        </header>
+
+        <!-- Live Dashboard Section -->
+        <main id="live-section">
+            <div class="patient-registration card">
+                <div class="registration-header">
+                    <i class="fa-solid fa-id-card"></i>
+                    <h2>Patient Information</h2>
+                </div>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="patient-name">Patient Name</label>
+                        <input type="text" id="patient-name" placeholder="Enter patient name..." autocomplete="off">
+                    </div>
+                    <button id="save-data-btn" class="save-btn">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Save to Database
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- Temperature Card -->
+                <div class="card health-card">
+                    <div class="card-header">
+                        <span class="card-label">Body Temperature</span>
+                        <div class="card-icon" style="color: #f43f5e; background: rgba(244, 63, 94, 0.1);">
+                            <i class="fa-solid fa-temperature-half"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">
+                        <span id="temp-val">--.-</span>
+                        <span class="card-unit">°C</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="temp-time">Waiting...</span>
+                    </div>
+                </div>
+
+                <!-- Weight Card -->
+                <div class="card health-card">
+                    <div class="card-header">
+                        <span class="card-label">Body Weight</span>
+                        <div class="card-icon" style="color: #6366f1; background: rgba(99, 102, 241, 0.1);">
+                            <i class="fa-solid fa-weight-scale"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">
+                        <span id="weight-val">--.-</span>
+                        <span class="card-unit">kg</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="weight-time">Waiting...</span>
+                    </div>
+                </div>
+
+                <!-- Height Card -->
+                <div class="card health-card">
+                    <div class="card-header">
+                        <span class="card-label">Height</span>
+                        <div class="card-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.1);">
+                            <i class="fa-solid fa-ruler-vertical"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">
+                        <span id="height-val">---</span>
+                        <span class="card-unit">cm</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="height-time">Waiting...</span>
+                    </div>
+                </div>
+
+                <!-- BPM Card -->
+                <div class="card health-card">
+                    <div class="card-header">
+                        <span class="card-label">Heart Rate</span>
+                        <div class="card-icon" style="color: #ec4899; background: rgba(236, 72, 153, 0.1);">
+                            <i class="fa-solid fa-heartbeat pulse"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">
+                        <span id="bpm-val">--</span>
+                        <span class="card-unit">bpm</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="bpm-time">Waiting...</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- History Section -->
+        <main id="history-section" style="display: none;">
+            <div class="history-container card">
+                <div class="history-header">
+                    <h2><i class="fa-solid fa-database"></i> Database Records</h2>
+                    <button id="refresh-history" class="refresh-btn"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Patient Name</th>
+                                <th>Weight (kg)</th>
+                                <th>Height (cm)</th>
+                                <th>Temp (°C)</th>
+                                <th>BPM</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body">
+                            <!-- Rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="no-data" class="no-data" style="display: none;">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <p>No records found in database.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+    <!-- Custom Logic -->
+    <script src="script.js"></script>
+</body>
+
+</html>
